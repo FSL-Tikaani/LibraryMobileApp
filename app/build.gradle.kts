@@ -36,6 +36,14 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
+
+    implementation(libs.recyclerview)
+    implementation(libs.cardview)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.picasso)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
