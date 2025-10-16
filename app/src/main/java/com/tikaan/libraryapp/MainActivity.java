@@ -1,8 +1,10 @@
 package com.tikaan.libraryapp;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.tikaan.libraryapp.adapter.BookCardsAdapter;
 import com.tikaan.libraryapp.adapter.VerticalSpaceItemDecoration;
@@ -20,12 +22,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setCustomActionBar();
         generateData();
+
+
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         BookCardsAdapter bookCardsAdapter = new BookCardsAdapter(this.getLayoutInflater(), books);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(50));
         recyclerView.setAdapter(bookCardsAdapter);
+    }
+
+    private void setCustomActionBar(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
     }
 
     private void generateData() {
