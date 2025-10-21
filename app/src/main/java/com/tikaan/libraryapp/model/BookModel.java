@@ -1,32 +1,38 @@
 package com.tikaan.libraryapp.model;
 
-import java.util.List;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.util.List;
+@Entity(tableName = "books")
 public class BookModel {
-    private String id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String title;
     private String description;
     private String author;
     private List<String> tags;
+    private boolean isFavourite;
     private String srcImage;
 
     public BookModel() {
     }
 
-    public BookModel(String id, String title, String description, String author, List<String> tags, String srcImage) {
+    public BookModel(int id, String title, String description, String author, List<String> tags, boolean isFavourite, String srcImage) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.author = author;
         this.tags = tags;
+        this.isFavourite = isFavourite;
         this.srcImage = srcImage;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -60,6 +66,14 @@ public class BookModel {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
+
+    public boolean getIsFavourite() {
+        return isFavourite;
     }
 
     public String getSrcImage() {
