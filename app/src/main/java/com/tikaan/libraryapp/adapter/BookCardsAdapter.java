@@ -3,7 +3,6 @@ package com.tikaan.libraryapp.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,6 +63,28 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
         notifyDataSetChanged();
     }
 
+    // Новый метод для немедленного обновления состояния избранного
+    public void updateBookState(int bookId, boolean newFavouriteState) {
+        for (int i = 0; i < books.size(); i++) {
+            BookModel book = books.get(i);
+            if (book.getId() == bookId) {
+                // Создаем новый объект с обновленным состоянием
+                BookModel updatedBook = new BookModel(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getDescription(),
+                        book.getAuthor(),
+                        book.getTags(),
+                        newFavouriteState, // новое состояние
+                        book.getSrcImage()
+                );
+                books.set(i, updatedBook);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     // Метод для обновления отдельной книги
     public void updateBook(BookModel updatedBook) {
         for (int i = 0; i < books.size(); i++) {
@@ -109,6 +130,9 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
             tv_description.setText(book.getDescription());
             tv_author.setText(book.getAuthor());
 
+            // Устанавливаем правильную иконку для избранного
+            updateFavoriteIcon(book.getIsFavourite());
+
             // Загружаем изображение с помощью Picasso
             Picasso.get()
                     .load("https://api.bookmate.ru/assets/books-covers/4c/92/h2P7sCIT-ipad.jpeg?image_hash=5848150d75897b6dc2055ba52b06f6a4")
@@ -120,10 +144,10 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
             btn_favorite.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onFavouriteClick(book);
+                    // Немедленно обновляем иконку после клика
+                    updateFavoriteIcon(!book.getIsFavourite());
                 }
             });
-
-
 
             // Обработчик клика на всю карточку
             itemView.setOnClickListener(v -> {
@@ -131,6 +155,14 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
                     listener.onBookClick(book);
                 }
             });
+        }
+
+        private void updateFavoriteIcon(boolean isFavourite) {
+            if (isFavourite) {
+                btn_favorite.setImageResource(R.drawable.baseline_favorite_24); // заполненное сердечко
+            } else {
+                btn_favorite.setImageResource(R.drawable.outline_favorite_24); // контур сердечка
+            }
         }
     }
 }

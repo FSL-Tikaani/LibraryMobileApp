@@ -1,6 +1,7 @@
 package com.tikaan.libraryapp.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,11 @@ import com.tikaan.libraryapp.adapter.BookCardsAdapter;
 import com.tikaan.libraryapp.adapter.VerticalSpaceItemDecoration;
 import com.tikaan.libraryapp.model.BookModel;
 
-
 public class HomeFragment extends Fragment {
 
     private MainViewModel viewModel;
     private BookCardsAdapter adapter;
+    private LayoutInflater inflater;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.inflater = inflater;
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.home_recycler_view);
@@ -51,9 +53,16 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFavouriteClick(BookModel bookModel) {
+                Log.d("HomeFragment", "id: " + bookModel.getId() + " isFavourite: " + bookModel.getIsFavourite());
+
+                // НЕМЕДЛЕННО обновляем UI
+                boolean newState = !bookModel.getIsFavourite();
+                adapter.updateBookState(bookModel.getId(), newState);
+
+                // Затем обновляем в базе данных
                 viewModel.toggleFavorite(bookModel.getId(), bookModel.getIsFavourite());
-                //boolean newState = viewModel.getBook(bookModel.getId()).getValue().getIsFavourite();
-                Toast.makeText(inflater.getContext(), Integer.toString(bookModel.getId()), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(inflater.getContext(), "Favorite updated", Toast.LENGTH_SHORT).show();
             }
         });
 
