@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.home_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(50));
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
         adapter = new BookCardsAdapter(inflater);
 
         recyclerView.setAdapter(adapter);

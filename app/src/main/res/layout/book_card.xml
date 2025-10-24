@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="#A8A8A8"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:background="?android:selectableItemBackground"
+        android:layout_height="160dp">
 
     <ImageView
         android:id="@+id/bookCard_imageView_photoBook"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_width="100dp"
+        android:layout_height="135dp"
+        android:layout_marginStart="20dp"
         android:contentDescription="ImageBook"
+        android:scaleType="centerCrop"
+        android:background="@drawable/round_outline"
+        android:clipToOutline="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -22,8 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="50dp"
         android:text="Название книги"
+        android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,32 +36,42 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/bookCard_textView_descriptionBook"
+        android:id="@+id/bookCard_textView_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:text="Имя автора"
+        android:textColor="#100F0F"
         app:layout_constraintStart_toStartOf="@+id/bookCard_textView_titleBook"
         app:layout_constraintTop_toBottomOf="@+id/bookCard_textView_titleBook" />
 
-    <TextView
-        android:id="@+id/bookCard_textView_tags"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#949494"
-        android:text="Тут будут тэги книги"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/bookCard_textView_descriptionBook"
-        app:layout_constraintTop_toBottomOf="@+id/bookCard_textView_descriptionBook" />
+    <ImageView
+        android:id="@+id/bookCard_imageView_favourite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bookCard_textView_titleBook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookCard_textView_titleBook"
+        app:layout_constraintTop_toTopOf="@+id/bookCard_textView_titleBook"
+        app:srcCompat="@drawable/outline_favorite_24" />
 
-    <ImageButton
-        android:id="@+id/bookCard_imageButton_favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+    <TextView
+        android:id="@+id/bookCard_textView_description"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:ellipsize="end"
+        android:text="Описание Описание Описание Описание Описание Описание Описание Описание Описание "
+        android:textColor="#7B7878"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bookCard_textView_author"
+        app:layout_constraintTop_toBottomOf="@+id/bookCard_textView_author" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9D9C9C"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/outline_favorite_24" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

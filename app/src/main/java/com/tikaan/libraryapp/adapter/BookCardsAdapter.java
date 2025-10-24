@@ -92,24 +92,26 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imageBook;
-        final TextView tv_title, tv_description;
-        final ImageButton btn_favorite;
+        final TextView tv_title, tv_description, tv_author;
+        final ImageView btn_favorite;
 
         ViewHolder(View view) {
             super(view);
             imageBook = view.findViewById(R.id.bookCard_imageView_photoBook);
             tv_title = view.findViewById(R.id.bookCard_textView_titleBook);
-            tv_description = view.findViewById(R.id.bookCard_textView_descriptionBook);
-            btn_favorite = view.findViewById(R.id.bookCard_imageButton_favorite);
+            tv_author = view.findViewById(R.id.bookCard_textView_author);
+            tv_description = view.findViewById(R.id.bookCard_textView_description);
+            btn_favorite = view.findViewById(R.id.bookCard_imageView_favourite);
         }
 
         public void bind(BookModel book, OnBookClickListener listener) {
             tv_title.setText(book.getTitle());
             tv_description.setText(book.getDescription());
+            tv_author.setText(book.getAuthor());
 
             // Загружаем изображение с помощью Picasso
             Picasso.get()
-                    .load(book.getSrcImage())
+                    .load("https://api.bookmate.ru/assets/books-covers/4c/92/h2P7sCIT-ipad.jpeg?image_hash=5848150d75897b6dc2055ba52b06f6a4")
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_foreground)
                     .into(imageBook);

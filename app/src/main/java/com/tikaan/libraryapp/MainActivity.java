@@ -1,18 +1,18 @@
 package com.tikaan.libraryapp;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tikaan.libraryapp.fragments.AddFragment;
 import com.tikaan.libraryapp.fragments.FavouriteFragment;
 import com.tikaan.libraryapp.fragments.HomeFragment;
 import com.tikaan.libraryapp.fragments.SearchFragment;
-import com.tikaan.libraryapp.model.BookModel;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,9 +53,17 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-
     private void setCustomActionBar(){
         Toolbar toolbar = findViewById(R.id.toolbar);
+        ImageView btnAdd = findViewById(R.id.btn_add);
+        if (btnAdd != null) {
+            btnAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setCurrentFragment(new AddFragment());
+                }
+            });
+        }
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
