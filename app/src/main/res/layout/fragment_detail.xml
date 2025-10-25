@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Обложка книги -->
+        <ImageView
+            android:id="@+id/detail_ivCover"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:contentDescription="Обложка книги" />
+
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/detail_tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textAlignment="center" />
+
+        <!-- Автор -->
+        <TextView
+            android:id="@+id/detail_tvAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textAlignment="center" />
+
+        <!-- Теги -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/detail_chipGroupTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:singleLine="true"
+            app:chipSpacing="8dp" />
+
+        <!-- Описание -->
+        <TextView
+            android:id="@+id/detail_tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textIsSelectable="true" />
+
+    </LinearLayout>
+</ScrollView>

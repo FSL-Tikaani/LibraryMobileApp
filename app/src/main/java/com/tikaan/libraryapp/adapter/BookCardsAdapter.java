@@ -1,5 +1,6 @@
 package com.tikaan.libraryapp.adapter;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
     public interface OnBookClickListener {
         void onBookClick(BookModel bookModel);
         void onFavouriteClick(BookModel bookModel);
+
+        void onLongClick(BookModel bookModel);
     }
 
     public void setOnBookClickListener(OnBookClickListener listener) {
@@ -64,10 +67,10 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
     }
 
     // Новый метод для немедленного обновления состояния избранного
-    public void updateBookState(int bookId, boolean newFavouriteState) {
+    public void updateBookState(String bookId, boolean newFavouriteState) {
         for (int i = 0; i < books.size(); i++) {
             BookModel book = books.get(i);
-            if (book.getId() == bookId) {
+            if (book.getId().equals(bookId) ) {
                 // Создаем новый объект с обновленным состоянием
                 BookModel updatedBook = new BookModel(
                         book.getId(),
@@ -154,6 +157,13 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
                 if (listener != null) {
                     listener.onBookClick(book);
                 }
+            });
+
+            itemView.setOnLongClickListener(v -> {
+                if (listener != null) {
+                    listener.onLongClick(book);
+                }
+                return true;
             });
         }
 

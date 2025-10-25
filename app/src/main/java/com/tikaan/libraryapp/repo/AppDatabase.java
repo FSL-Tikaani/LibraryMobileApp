@@ -12,7 +12,7 @@ import com.tikaan.libraryapp.model.BookModel;
 
 @Database(
         entities = {BookModel.class},
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 @TypeConverters({Converters.class})

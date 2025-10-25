@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tikaan.libraryapp.fragments.AddFragment;
+import com.tikaan.libraryapp.fragments.EditFragment;
 import com.tikaan.libraryapp.fragments.FavouriteFragment;
 import com.tikaan.libraryapp.fragments.HomeFragment;
 import com.tikaan.libraryapp.fragments.SearchFragment;
+import com.tikaan.libraryapp.model.BookModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    public void navigateToFragment(Fragment fragment) {
+        setCurrentFragment(fragment);
+    }
+
+
     private void setCustomActionBar(){
         Toolbar toolbar = findViewById(R.id.toolbar);
         ImageView btnAdd = findViewById(R.id.btn_add);
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             btnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setCurrentFragment(new AddFragment());
+                    setCurrentFragment(new EditFragment());
                 }
             });
         }

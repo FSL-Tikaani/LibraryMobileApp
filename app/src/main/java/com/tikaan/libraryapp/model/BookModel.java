@@ -1,13 +1,22 @@
 package com.tikaan.libraryapp.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+
+import com.tikaan.libraryapp.repo.Converters;
 
 import java.util.List;
+import java.util.UUID;
+
 @Entity(tableName = "books")
+@TypeConverters(Converters.class)
 public class BookModel {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+    private String id;
     private String title;
     private String description;
     private String author;
@@ -16,9 +25,11 @@ public class BookModel {
     private String srcImage;
 
     public BookModel() {
+        this.id = UUID.randomUUID().toString();
     }
 
-    public BookModel(int id, String title, String description, String author, List<String> tags, boolean isFavourite, String srcImage) {
+    public BookModel(@NonNull String id, String title, String description, String author,
+                     List<String> tags, boolean isFavourite, String srcImage) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -28,11 +39,12 @@ public class BookModel {
         this.srcImage = srcImage;
     }
 
-    public int getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -68,12 +80,12 @@ public class BookModel {
         this.tags = tags;
     }
 
-    public void setFavourite(boolean favourite) {
-        isFavourite = favourite;
-    }
-
     public boolean getIsFavourite() {
         return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 
     public String getSrcImage() {
@@ -82,5 +94,18 @@ public class BookModel {
 
     public void setSrcImage(String srcImage) {
         this.srcImage = srcImage;
+    }
+
+    @Override
+    public String toString() {
+        return "BookModel{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", author='" + author + '\'' +
+                ", tags=" + tags +
+                ", isFavourite=" + isFavourite +
+                ", srcImage='" + srcImage + '\'' +
+                '}';
     }
 }

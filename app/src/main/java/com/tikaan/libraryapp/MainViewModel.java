@@ -1,6 +1,7 @@
 package com.tikaan.libraryapp;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,13 +26,15 @@ public class MainViewModel extends AndroidViewModel {
 
         allBooks = bookRepository.getAllBooks();
         favouriteBooks = bookRepository.getFavouriteBooks();
+
+        Log.d("MainViewModel", "ViewModel создан");
     }
 
     public LiveData<List<BookModel>> getAllBooks(){
         return allBooks;
     }
 
-    public LiveData<BookModel> getBook(int id){
+    public LiveData<BookModel> getBook(String id){
         return bookRepository.getBook(id);
     }
 
@@ -58,15 +61,23 @@ public class MainViewModel extends AndroidViewModel {
         return favouriteBooks;
     }
 
-    public void toggleFavorite(int productId, boolean isCurrentlyFavorite) {
+    public void toggleFavorite(String productId, boolean isCurrentlyFavorite) { // Изменено на String
+        Log.d("MainViewModel", "Изменение избранного для ID: " + productId);
         bookRepository.updateFavouriteStatus(productId, !isCurrentlyFavorite);
     }
 
-    public void addProduct(BookModel bookModel){
+    public void addBook(BookModel bookModel){
+        Log.d("MainViewModel", "addBook: " + bookModel.getTitle() + ", ID: " + bookModel.getId());
         bookRepository.insertBook(bookModel);
     }
 
-    public void deleteProduct(BookModel bookModel){
+    public void updateBook(BookModel bookModel){
+        Log.d("MainViewModel", "updateBook: " + bookModel.getTitle() + ", ID: " + bookModel.getId());
+        bookRepository.updateBook(bookModel);
+    }
+
+    public void deleteBook(BookModel bookModel){
+        Log.d("MainViewModel", "deleteBook: " + bookModel.getTitle());
         bookRepository.deleteBook(bookModel);
     }
 }

@@ -17,7 +17,7 @@ public interface BooksDao {
     LiveData<List<BookModel>> getAllBooks();
 
     @Query("SELECT * FROM books WHERE id = :id")
-    LiveData<BookModel> getBookFromId(int id);
+    LiveData<BookModel> getBookFromId(String id);
 
     @Query("SELECT * FROM books WHERE isFavourite = 1")
     LiveData<List<BookModel>> getFavourite();
@@ -35,5 +35,5 @@ public interface BooksDao {
     void deleteProduct(BookModel bookModel);
 
     @Query("UPDATE books SET isFavourite = :isFavourite WHERE id = :id")
-    void updateFavoriteStatus(int id, boolean isFavourite);
+    void updateFavoriteStatus(String id, boolean isFavourite);
 }
