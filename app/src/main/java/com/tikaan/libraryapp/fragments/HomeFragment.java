@@ -21,6 +21,9 @@ import com.tikaan.libraryapp.adapter.BookCardsAdapter;
 import com.tikaan.libraryapp.adapter.VerticalSpaceItemDecoration;
 import com.tikaan.libraryapp.model.BookModel;
 
+/**
+ * Главный фрагмент для отображения всех книг
+ */
 public class HomeFragment extends Fragment {
 
     private MainViewModel viewModel;
@@ -29,6 +32,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Инициализация ViewModel для работы с данными
         viewModel = new MainViewModel(requireActivity().getApplication());
     }
 
@@ -37,13 +41,14 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
+        // Настройка RecyclerView для отображения списка книг
         RecyclerView recyclerView = view.findViewById(R.id.home_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10));
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(10)); // Отступы между элементами
         adapter = new BookCardsAdapter(inflater);
-
         recyclerView.setAdapter(adapter);
 
+        // Обработчики кликов по карточкам книг
         adapter.setOnBookClickListener(new BookCardsAdapter.OnBookClickListener() {
             @Override
             public void onBookClick(BookModel bookModel) {
@@ -56,12 +61,10 @@ public class HomeFragment extends Fragment {
 
                 // НЕМЕДЛЕННО обновляем UI
                 boolean newState = !bookModel.getIsFavourite();
-                adapter.updateBookState(bookModel.getId(), newState);
+                adapter.updateBookFavoriteState(bookModel.getId(), newState);
 
                 // Затем обновляем в базе данных
                 viewModel.toggleFavorite(bookModel.getId(), bookModel.getIsFavourite());
-
-                Toast.makeText(inflater.getContext(), "Favorite updated", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -70,13 +73,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Наблюдение за изменениями списка всех книг
         viewModel.getAllBooks().observe(getViewLifecycleOwner(), bookModels -> {
-            adapter.setBooksList(bookModels);
+            adapter.setBooks(bookModels);
         });
 
         return view;
     }
 
+    // Показ диалога с действиями для книги
     private void showActionsDialog(BookModel book) {
         String[] options = {"Редактировать", "Удалить"};
 
@@ -84,10 +89,10 @@ public class HomeFragment extends Fragment {
         builder.setTitle("Выберите действие")
                 .setItems(options, (dialog, which) -> {
                     switch (which) {
-                        case 0:
+                        case 0: // Редактировать
                             openBookEdit(book);
                             break;
-                        case 1:
+                        case 1: // Удалить
                             viewModel.deleteBook(book);
                             break;
                     }
@@ -95,16 +100,18 @@ public class HomeFragment extends Fragment {
         builder.create().show();
     }
 
+    // Открытие фрагмента с детальной информацией о книге
     private void openBookDetail(BookModel bookModel) {
-        Toast.makeText(getContext(), "Book clicked: " + bookModel.getTitle(), Toast.LENGTH_SHORT).show();
         setCurrentFragment(new DetailFragment(bookModel));
     }
 
+    // Открытие фрагмента редактирования книги
     private void openBookEdit(BookModel bookModel) {
         MainActivity activity = (MainActivity) requireActivity();
         activity.navigateToFragment(new EditFragment(bookModel));
     }
 
+    // Переход к указанному фрагменту
     private void setCurrentFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

@@ -19,13 +19,12 @@ import com.tikaan.libraryapp.MainViewModel;
 import com.tikaan.libraryapp.R;
 import com.tikaan.libraryapp.model.BookModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+/**
+ * Фрагмент для редактирования существующей книги или создания новой
+ */
 public class EditFragment extends Fragment {
 
     private BookModel bookModel;
@@ -35,8 +34,10 @@ public class EditFragment extends Fragment {
 
     private MainViewModel viewModel;
 
+    // Конструктор для создания новой книги
     public EditFragment() {}
 
+    // Конструктор для редактирования существующей книги
     public EditFragment(BookModel bookModel) {
         this.bookModel = bookModel;
     }
@@ -44,6 +45,7 @@ public class EditFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Получение ViewModel для работы с данными
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
     }
 
@@ -54,10 +56,11 @@ public class EditFragment extends Fragment {
         initViews(view);
         setupClickListeners();
         populateData();
-        Log.d("EditFragment", "Переданы дынные: " + Boolean.toString(bookModel != null));
+        Log.d("EditFragment", "Переданы данные: " + Boolean.toString(bookModel != null));
         return view;
     }
 
+    // Инициализация всех View элементов
     private void initViews(View view) {
         etTitle = view.findViewById(R.id.addFragment_et_title);
         etAuthor = view.findViewById(R.id.addFragment_et_author);
@@ -68,10 +71,12 @@ public class EditFragment extends Fragment {
         btnSave = view.findViewById(R.id.addFragment_btn_save);
     }
 
+    // Настройка обработчиков кликов
     private void setupClickListeners() {
         btnSave.setOnClickListener(v -> saveBook());
     }
 
+    // Заполнение полей данными существующей книги (в режиме редактирования)
     private void populateData() {
         if (bookModel != null) {
             etTitle.setText(bookModel.getTitle());
@@ -80,14 +85,16 @@ public class EditFragment extends Fragment {
             etImageSrc.setText(bookModel.getSrcImage());
             cbFavourite.setChecked(bookModel.getIsFavourite());
 
+            // Объединение тегов в строку через запятую
             if (bookModel.getTags() != null && !bookModel.getTags().isEmpty()) {
                 etTags.setText(String.join(", ", bookModel.getTags()));
             }
         }
     }
-    // Валидация данных из EditText
-    private void saveBook() {
 
+    // Валидация и сохранение книги
+    private void saveBook() {
+        // Проверка заполнения обязательных полей
         if (etTitle.getText().toString().trim().isEmpty()) {
             Toast.makeText(getContext(), "Введите название книги", Toast.LENGTH_SHORT).show();
             return;
@@ -108,7 +115,7 @@ public class EditFragment extends Fragment {
             return;
         }
 
-        // Если данные прошли валидацию, сохраняем их в новый объект BookModel
+        // Создание нового объекта книги из введенных данных
         BookModel newBook = new BookModel();
 
         newBook.setTitle(etTitle.getText().toString().trim());
@@ -117,27 +124,30 @@ public class EditFragment extends Fragment {
         newBook.setSrcImage(etImageSrc.getText().toString().trim());
         newBook.setFavourite(cbFavourite.isChecked());
         newBook.setTags(List.of(etTags.getText().toString().trim().split(",")));
-        // Если объект bookModel совпадает с newBook, то данные не изменены, не нужно сохранять
+
+        // Проверка, изменились ли данные
         if (checkEqualBooks(bookModel, newBook)) {
             Toast.makeText(getContext(), "Книга не изменена!", Toast.LENGTH_SHORT).show();
         }else{
-            // Если создаем книгу с нуля, то создаем новую запись с новым id
+            // Создание новой книги или обновление существующей
             if (bookModel == null) {
-                newBook.setId(UUID.randomUUID().toString());
+                newBook.setId(UUID.randomUUID().toString()); // Генерация нового ID
                 createNewBook(newBook);
             }else {
-                newBook.setId(bookModel.getId());
+                newBook.setId(bookModel.getId()); // Сохранение существующего ID
                 updateBook(newBook);
             }
         }
     }
 
+    // Обновление существующей книги
     private void updateBook(BookModel newBook) {
         viewModel.updateBook(newBook);
         Toast.makeText(getContext(), "Книга обновлена", Toast.LENGTH_SHORT).show();
         setCurrentFragment(new HomeFragment());
     }
 
+    // Сравнение двух книг по всем полям
     private Boolean checkEqualBooks(BookModel book1, BookModel book2) {
         boolean equal = false;
         if (book1 == null || book2 == null) {
@@ -161,17 +171,18 @@ public class EditFragment extends Fragment {
         return equal;
     }
 
+    // Создание новой книги
     private void createNewBook(BookModel newBook) {
         viewModel.addBook(newBook);
         Toast.makeText(getContext(), "Книга добавлена", Toast.LENGTH_SHORT).show();
         setCurrentFragment(new HomeFragment());
     }
 
+    // Переход к указанному фрагменту
     private void setCurrentFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, fragment)
                 .commit();
     }
-
 }

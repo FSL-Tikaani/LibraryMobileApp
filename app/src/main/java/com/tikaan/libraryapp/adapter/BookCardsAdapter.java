@@ -16,35 +16,42 @@ import com.tikaan.libraryapp.model.BookModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Адаптер для отображения книг в RecyclerView в виде карточек.
+ * Поддерживает обработку кликов для выбора книги и управления избранным.
+ */
 public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
-    private List<BookModel> books = new ArrayList<>();
+    private List<BookModel> books;
     private OnBookClickListener listener;
 
+    /**
+     * Интерфейс для обработки различных типов кликов по карточке книги
+     */
     public interface OnBookClickListener {
         void onBookClick(BookModel bookModel);
         void onFavouriteClick(BookModel bookModel);
-
         void onLongClick(BookModel bookModel);
+    }
+
+    public BookCardsAdapter(@NonNull LayoutInflater inflater) {
+        this.inflater = inflater;
+        this.books = new ArrayList<>();
+    }
+
+    public BookCardsAdapter(@NonNull LayoutInflater inflater, @NonNull List<BookModel> books) {
+        this.inflater = inflater;
+        this.books = new ArrayList<>(books);
     }
 
     public void setOnBookClickListener(OnBookClickListener listener) {
         this.listener = listener;
     }
 
-    public BookCardsAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
-    }
-
-    public BookCardsAdapter(LayoutInflater inflater, List<BookModel> books) {
-        this.inflater = inflater;
-        this.books = books;
-    }
-
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.book_card, parent, false);
         return new ViewHolder(view);
     }
@@ -60,37 +67,36 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
         return books.size();
     }
 
-    public void setBooksList(List<BookModel> data) {
-        this.books = data != null ? data : new ArrayList<>();
+    /**
+     * Полная замена списка книг
+     */
+    public void setBooks(@NonNull List<BookModel> books) {
+        this.books = new ArrayList<>(books);
         notifyDataSetChanged();
     }
 
-    // Новый метод для немедленного обновления состояния избранного
-    public void updateBookState(String bookId, boolean newFavouriteState) {
+    /**
+     * Обновляет состояние избранного для конкретной книги
+     */
+    public void updateBookFavoriteState(@NonNull String bookId, boolean isFavorite) {
         for (int i = 0; i < books.size(); i++) {
             BookModel book = books.get(i);
-            if (book.getId().equals(bookId) ) {
-                // Создаем новый объект с обновленным состоянием
-                BookModel updatedBook = new BookModel(
-                        book.getId(),
-                        book.getTitle(),
-                        book.getDescription(),
-                        book.getAuthor(),
-                        book.getTags(),
-                        newFavouriteState, // новое состояние
-                        book.getSrcImage()
-                );
+            if (book.getId().equals(bookId)) {
+                // Создаем новый объект книги с обновленным состоянием избранного
+                BookModel updatedBook = createBookWithUpdatedFavorite(book, isFavorite);
                 books.set(i, updatedBook);
-                notifyItemChanged(i);
+                notifyItemChanged(i); // Обновляем только измененный элемент
                 break;
             }
         }
     }
 
-    // Метод для обновления отдельной книги
-    public void updateBook(BookModel updatedBook) {
+    /**
+     * Обновляет данные одной книги в списке
+     */
+    public void updateBook(@NonNull BookModel updatedBook) {
         for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId() == updatedBook.getId()) {
+            if (books.get(i).getId().equals(updatedBook.getId())) {
                 books.set(i, updatedBook);
                 notifyItemChanged(i);
                 break;
@@ -98,66 +104,110 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
         }
     }
 
-    // Метод для добавления списка книг
-    public void addBooks(List<BookModel> newBooks) {
-        if (newBooks != null && !newBooks.isEmpty()) {
+    /**
+     * Добавляет новые книги в существующий список
+     */
+    public void addBooks(@NonNull List<BookModel> newBooks) {
+        if (!newBooks.isEmpty()) {
             int startPosition = books.size();
             books.addAll(newBooks);
+            // Эффективное обновление - только для добавленных элементов
             notifyItemRangeInserted(startPosition, newBooks.size());
         }
     }
 
-    // Метод для очистки списка
+    /**
+     * Очищает весь список книг
+     */
     public void clearBooks() {
+        int itemCount = books.size();
         books.clear();
-        notifyDataSetChanged();
+        // Уведомляем об удалении всех элементов
+        notifyItemRangeRemoved(0, itemCount);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView imageBook;
-        final TextView tv_title, tv_description, tv_author;
-        final ImageView btn_favorite;
+    /**
+     * Создает копию книги с обновленным состоянием избранного
+     */
+    @NonNull
+    private BookModel createBookWithUpdatedFavorite(@NonNull BookModel book, boolean isFavorite) {
+        return new BookModel(
+                book.getId(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getAuthor(),
+                book.getTags(),
+                isFavorite,
+                book.getSrcImage()
+        );
+    }
 
-        ViewHolder(View view) {
-            super(view);
-            imageBook = view.findViewById(R.id.bookCard_imageView_photoBook);
-            tv_title = view.findViewById(R.id.bookCard_textView_titleBook);
-            tv_author = view.findViewById(R.id.bookCard_textView_author);
-            tv_description = view.findViewById(R.id.bookCard_textView_description);
-            btn_favorite = view.findViewById(R.id.bookCard_imageView_favourite);
+    /**
+     * ViewHolder для отображения карточки отдельной книги
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView bookImageView;
+        private final TextView titleTextView;
+        private final TextView authorTextView;
+        private final TextView descriptionTextView;
+        private final ImageView favoriteImageView;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            // Инициализация всех View элементов карточки
+            bookImageView = itemView.findViewById(R.id.bookCard_imageView_photoBook);
+            titleTextView = itemView.findViewById(R.id.bookCard_textView_titleBook);
+            authorTextView = itemView.findViewById(R.id.bookCard_textView_author);
+            descriptionTextView = itemView.findViewById(R.id.bookCard_textView_description);
+            favoriteImageView = itemView.findViewById(R.id.bookCard_imageView_favourite);
         }
 
-        public void bind(BookModel book, OnBookClickListener listener) {
-            tv_title.setText(book.getTitle());
-            tv_description.setText(book.getDescription());
-            tv_author.setText(book.getAuthor());
+        /**
+         * Привязывает данные книги к View элементам
+         * @param book данные книги для отображения
+         * @param listener обработчик кликов
+         */
+        public void bind(@NonNull BookModel book, OnBookClickListener listener) {
+            // Установка текстовых данных
+            titleTextView.setText(book.getTitle());
+            descriptionTextView.setText(book.getDescription());
+            authorTextView.setText(book.getAuthor());
 
-            // Устанавливаем правильную иконку для избранного
+            // Обновление иконки избранного
             updateFavoriteIcon(book.getIsFavourite());
 
-            // Загружаем изображение с помощью Picasso
+            // Загрузка изображения книги с использованием Picasso
+            // Если у книги нет своего изображения, используем заглушку
+            String imageUrl = book.getSrcImage();
             Picasso.get()
-                    .load("https://api.bookmate.ru/assets/books-covers/4c/92/h2P7sCIT-ipad.jpeg?image_hash=5848150d75897b6dc2055ba52b06f6a4")
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_foreground)
-                    .into(imageBook);
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_launcher_background) // Показываем пока грузится
+                    .error(R.drawable.ic_launcher_foreground)       // Показываем при ошибке
+                    .into(bookImageView);
 
-            // Обработчик клика на кнопку избранного
-            btn_favorite.setOnClickListener(v -> {
+            // Настройка обработчиков кликов
+            setupClickListeners(book, listener);
+        }
+
+        /**
+         * Настраивает все типы кликов по карточке книги
+         */
+        private void setupClickListeners(@NonNull BookModel book, OnBookClickListener listener) {
+            // Клик по иконке избранного
+            favoriteImageView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onFavouriteClick(book);
-                    // Немедленно обновляем иконку после клика
-                    updateFavoriteIcon(!book.getIsFavourite());
                 }
             });
 
-            // Обработчик клика на всю карточку
+            // Клик по всей карточке (для открытия деталей книги)
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onBookClick(book);
                 }
             });
 
+            // Долгий клик по карточке (для контекстного меню)
             itemView.setOnLongClickListener(v -> {
                 if (listener != null) {
                     listener.onLongClick(book);
@@ -166,12 +216,14 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
             });
         }
 
+        /**
+         * Обновляет иконку избранного в зависимости от состояния
+         */
         private void updateFavoriteIcon(boolean isFavourite) {
-            if (isFavourite) {
-                btn_favorite.setImageResource(R.drawable.baseline_favorite_24); // заполненное сердечко
-            } else {
-                btn_favorite.setImageResource(R.drawable.outline_favorite_24); // контур сердечка
-            }
+            int iconResource = isFavourite ?
+                    R.drawable.baseline_favorite_24 :     // Заполненное сердечко
+                    R.drawable.outline_favorite_24;       // Контур сердечка
+            favoriteImageView.setImageResource(iconResource);
         }
     }
 }

@@ -6,29 +6,38 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Декорация для добавления вертикальных отступов между элементами RecyclerView
+ * Обеспечивает равномерные промежутки между карточками книг
+ */
 public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
+    private static final int DEFAULT_VERTICAL_SPACE = 16; // Значение по умолчанию в dp
     private final int verticalSpaceHeight;
 
     public VerticalSpaceItemDecoration(int verticalSpaceHeight) {
-        this.verticalSpaceHeight = verticalSpaceHeight;
+        // Защита от отрицательных значений - используем значение по умолчанию если переданное некорректно
+        this.verticalSpaceHeight = verticalSpaceHeight > 0 ?
+                verticalSpaceHeight : DEFAULT_VERTICAL_SPACE;
     }
 
     @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                               @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view);
-        int itemCount = state.getItemCount();
-        // Предотвращаем ошибку на пустых данных
-        if (position == RecyclerView.NO_POSITION){
+
+        // Проверка на валидность позиции
+        if (position == RecyclerView.NO_POSITION) {
             return;
         }
-        // Добавляем отступ для всех элементов, кроме последнего
-        if (position != itemCount - 1) {
-            outRect.bottom = verticalSpaceHeight;
-        }
 
-        // Отступ сверху для первого элемента
+        // Добавляем верхний отступ только для первого элемента
         if (position == 0) {
             outRect.top = verticalSpaceHeight;
+        }
+
+        // Добавляем нижний отступ для всех элементов кроме последнего
+        if (position != state.getItemCount() - 1) {
+            outRect.bottom = verticalSpaceHeight;
         }
     }
 }

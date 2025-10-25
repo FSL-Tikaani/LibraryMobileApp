@@ -17,14 +17,16 @@ import com.squareup.picasso.Picasso;
 import com.tikaan.libraryapp.R;
 import com.tikaan.libraryapp.model.BookModel;
 
+/**
+ * Фрагмент для отображения детальной информации о книге
+ */
 public class DetailFragment extends Fragment {
     private BookModel book;
     private TextView tv_title, tv_author, tv_desc;
-
     private ImageView image;
-
     private ChipGroup cg;
 
+    // Конструктор для передачи данных книги
     public DetailFragment(BookModel book) {
         this.book = book;
     }
@@ -39,22 +41,26 @@ public class DetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        // Инициализация View элементов
         tv_title = (TextView) view.findViewById(R.id.detail_tvTitle);
         tv_author = (TextView) view.findViewById(R.id.detail_tvAuthor);
         tv_desc = (TextView) view.findViewById(R.id.detail_tvDescription);
         image = (ImageView) view.findViewById(R.id.detail_ivCover);
         cg = (ChipGroup) view.findViewById(R.id.detail_chipGroupTags);
 
+        // Загрузка изображения книги с помощью Picasso
         Picasso.get()
                 .load(book.getSrcImage())
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_launcher_background) // Заглушка при загрузке
+                .error(R.drawable.ic_launcher_foreground)       // Заглушка при ошибке
                 .into(image);
 
+        // Установка текстовых данных
         tv_title.setText(book.getTitle());
         tv_author.setText(book.getAuthor());
         tv_desc.setText(book.getDescription());
 
+        // Создание и добавление чипов для тегов
         for (String tag : book.getTags()) {
             Chip chip = new Chip(getContext());
             chip.setText(tag);
