@@ -53,10 +53,11 @@ public class EditFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_fragment, container, false);
+
         initViews(view);
         setupClickListeners();
         populateData();
-        Log.d("EditFragment", "Переданы данные: " + Boolean.toString(bookModel != null));
+
         return view;
     }
 
@@ -147,7 +148,7 @@ public class EditFragment extends Fragment {
         setCurrentFragment(new HomeFragment());
     }
 
-    // Сравнение двух книг по всем полям
+    // Сравнение двух книг по всем полям креме id
     private Boolean checkEqualBooks(BookModel book1, BookModel book2) {
         boolean equal = false;
         if (book1 == null || book2 == null) {

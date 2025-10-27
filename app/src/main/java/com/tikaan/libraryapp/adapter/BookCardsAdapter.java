@@ -164,8 +164,6 @@ public class BookCardsAdapter extends RecyclerView.Adapter<BookCardsAdapter.View
 
         /**
          * Привязывает данные книги к View элементам
-         * @param book данные книги для отображения
-         * @param listener обработчик кликов
          */
         public void bind(@NonNull BookModel book, OnBookClickListener listener) {
             // Установка текстовых данных
